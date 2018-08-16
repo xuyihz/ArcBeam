@@ -4,7 +4,7 @@
 % Xu Yi, 2018
 
 %%
-function AB_init(fileID)
+function CB_init(fileID)
 %%
 fprintf(fileID,...
     ';---------------------------------------------------------------------------\n'...

@@ -4,7 +4,7 @@
 % Xu Yi, 2018
 
 %%
-function AB_model(fileID)
+function CB_model(fileID)
 %% SECTION
 SEC_400x400_num = '1'; SEC_300X500_num = '2';
 SEC_400x400_SNAME = '400x400'; SEC_300X500_SNAME = '300X500';
@@ -62,7 +62,7 @@ for i = 2:lengthlevelZaxis
         else
             P_end(:) = XYcoor(j+1,:);
         end
-        [iNO, Deg_num] = AB_arc_FE(fileID, iNO, levelZaxis(i), CoC, P_start, P_end, Arc_itvl);
+        [iNO, Deg_num] = CB_arc_FE(fileID, iNO, levelZaxis(i), CoC, P_start, P_end, Arc_itvl);
         XY_Deg_num(i,j) = Deg_num;
     end
 end
@@ -107,6 +107,7 @@ fprintf(fileID,'; 主梁\n');
 ELE_iPRO = 2;
 iNO = iNO_init; % 初始化iNO
 iNO_arc = iNO_main_end; % 初始化
+iEL_beam_0 = iEL;
 for i = 1:lengthlevelZaxis	% 此行与柱单元不同，柱单元为i-1
     for j = 1:XYcoor_num
         iN1_bkp = iNO+j+XYcoor_num*(i-1);
@@ -147,8 +148,24 @@ for i = 1:lengthlevelZaxis	% 此行与柱单元不同，柱单元为i-1
         end
     end
 end
+iEL_beam_end = iEL;
 iEL_end = iEL;
 fprintf(fileID,'\n');
+
+%% BEAMLOAD    ; Element Beam Loads
+fprintf(fileID,'*BEAMLOAD    ; Element Beam Loads\n');
+fprintf(fileID,'; ELEM_LIST, CMD, TYPE, DIR, bPROJ, [ECCEN], [VALUE], GROUP\n; ELEM_LIST, CMD, TYPE, TYPE, DIR, VX, VY, VZ, bPROJ, [ECCEN], [VALUE], GROUP\n; [VALUE]       : D1, P1, D2, P2, D3, P3, D4, P4\n; [ECCEN]       : bECCEN, ECCDIR, I-END, J-END, bJ-END\n; [ADDITIONAL]  : bADDITIONAL, ADDITIONAL_I-END, ADDITIONAL_J-END, bADDITIONAL_J-END\n');
+
+ELE_CMD = 'BEAM'; ELE_TYPE = 'UNILOAD'; ELE_DIR = 'GZ'; ELE_NO = 'NO'; ELE_aDir = 'aDir[1]';
+ELE_P = '-3e-003';
+
+iEL = iEL_beam_0;
+while iEL < iEL_end
+    iEL = iEL+1;
+    fprintf(fileID,'   %d, %s, %s, %s, %s, %s, %s, , , , 0, %s, 1, %s, 0, 0, 0, 0, , %s, 0, 0, %s, \n',...
+        iEL, ELE_CMD, ELE_TYPE, ELE_DIR, ELE_NO, ELE_NO, ELE_aDir,...
+        ELE_P, ELE_P, ELE_NO, ELE_NO);
+end
 
 %% CONSTRAINT
 fprintf(fileID,'*CONSTRAINT    ; Supports\n');

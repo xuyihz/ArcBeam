@@ -4,7 +4,7 @@
 % Xu Yi, 2018
 
 %%
-function [iNO_end, Deg_num] = AB_arc_FE(fileID, iNO_start, levelZaxis, CoC, P_start, P_end, interval)
+function [iNO_end, Deg_num] = CB_arc_FE(fileID, iNO_start, levelZaxis, CoC, P_start, P_end, interval)
 % iNO_end:终节点号备份。Deg_num:角度分隔总数，即直线段数。
 % fileID:MGT文件ID。iNO_start:始节点号。levelZaxis:节点Z坐标值，此处为XoY平面弧线。
 % CoC:圆心坐标。P_start:圆弧起点坐标。P_end:圆弧终点坐标。interval:最大容许直线近似的圆弧段的长度。
